@@ -3,6 +3,11 @@ import './globals.css';
 export const metadata = {
     title: 'DAMAN Pro System | Smart Dashboard',
     description: 'Advanced Management and Control Configuration',
+    icons: {
+        icon: '/logo.png',
+        shortcut: '/logo.png',
+        apple: '/logo.png',
+    },
 };
 
 export default function RootLayout({ children }) {

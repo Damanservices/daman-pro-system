@@ -123,28 +123,49 @@ export default function Home() {
     return () => unsubscribers.forEach(unsub => unsub());
   }, [fetchData]);
 
+  // Key Listeners for Modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isModalOpen) return;
+      if (e.key === 'Escape') setIsModalOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
+
   const handleFormChange = (field, value) => {
     const updatedForm = { ...formData, [field]: value };
 
-    const parseDate = (str) => {
+    const parseDateInput = (str) => {
       if (!str) return null;
       if (str.includes('/')) {
-        const [d, m, y] = str.split('/');
-        return new Date(`${y}-${m}-${d}`);
+        const parts = str.split('/');
+        if (parts.length === 3) {
+          const [d, m, y] = parts;
+          return new Date(`${y}-${m}-${d}`);
+        }
       }
       return new Date(str);
+    };
+
+    const formatDateInput = (date) => {
+      if (!date || isNaN(date.getTime())) return '';
+      const d = String(date.getDate()).padStart(2, '0');
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const y = date.getFullYear();
+      return `${d}/${m}/${y}`;
     };
 
     const calculateExpiry = (issueField, durationField, expiryField) => {
       const issueDateStr = updatedForm[issueField];
       const durationStr = updatedForm[durationField] || '1 Year';
-      if (issueDateStr && durationStr) {
-        const years = parseInt(durationStr);
-        const date = parseDate(issueDateStr);
+      if (issueDateStr) {
+        const years = parseInt(durationStr) || 1;
+        const date = parseDateInput(issueDateStr);
         if (date && !isNaN(date.getTime())) {
           const newDate = new Date(date);
           newDate.setFullYear(newDate.getFullYear() + years);
-          updatedForm[expiryField] = newDate.toISOString().split('T')[0];
+          updatedForm[expiryField] = formatDateInput(newDate);
         }
       }
     };
@@ -152,10 +173,10 @@ export default function Home() {
     const addDays = (dateField, days, targetField) => {
       const dateStr = updatedForm[dateField];
       if (dateStr) {
-        const date = new Date(dateStr);
-        if (!isNaN(date.getTime())) {
+        const date = parseDateInput(dateStr);
+        if (date && !isNaN(date.getTime())) {
           date.setDate(date.getDate() + days);
-          updatedForm[targetField] = date.toISOString().split('T')[0];
+          updatedForm[targetField] = formatDateInput(date);
         }
       }
     };
@@ -179,12 +200,12 @@ export default function Home() {
     if (modalType === 'company') {
       const now = new Date();
       const expiries = [updatedForm.License_Expiry, updatedForm.Immigration_Expiry, updatedForm.Ejari_Expiry];
-      const validExpiries = expiries.filter(e => e).map(e => new Date(e));
+      const validExpiries = expiries.filter(e => e).map(e => parseDateInput(e));
 
       if (validExpiries.length > 0) {
-        if (validExpiries.some(d => d < now)) {
+        if (validExpiries.some(d => d && d < now)) {
           updatedForm.Status = 'Expired';
-        } else if (validExpiries.some(d => (d - now) < (30 * 24 * 60 * 60 * 1000))) {
+        } else if (validExpiries.some(d => d && (d - now) < (30 * 24 * 60 * 60 * 1000))) {
           updatedForm.Status = 'Expiring Soon';
         } else {
           updatedForm.Status = 'Active';
@@ -294,16 +315,18 @@ export default function Home() {
   };
 
   const handleSave = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     let action = '';
+    const isEdit = !!(formData.rowId || formData.id);
+
     switch (modalType) {
-      case 'company': action = 'createCompany'; break;
-      case 'employee': action = 'createEmployee'; break;
-      case 'event': action = 'createEvent'; break;
-      case 'task': action = 'createTask'; break;
+      case 'company': action = isEdit ? 'updateCompany' : 'createCompany'; break;
+      case 'employee': action = isEdit ? 'updateEmployee' : 'createEmployee'; break;
+      case 'event': action = isEdit ? 'updateEvent' : 'createEvent'; break;
+      case 'task': action = isEdit ? 'updateTask' : 'createTask'; break;
       case 'smartAction': action = 'updateSmartAction'; break;
-      case 'dailyReport': action = 'createDailyReport'; break;
-      case 'schemaEntry': action = 'createSchemaField'; break;
+      case 'dailyReport': action = isEdit ? 'updateDailyReport' : 'createDailyReport'; break;
+      case 'schemaEntry': action = isEdit ? 'updateSchema' : 'createSchemaField'; break;
     }
     const success = await apiCall(action, formData);
     if (success) setIsModalOpen(false);

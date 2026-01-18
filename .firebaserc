@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "daman-system"
-  }
+    "default": "daman-pro-sys"
+  },
+  "targets": {},
+  "etags": {}
 }
