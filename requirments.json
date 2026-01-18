@@ -1,0 +1,22 @@
+{
+  "name": "daman-system",
+  "version": "1.0.0",
+  "description": "Local development setup for DAMAN-SYSTEM Apps Script.",
+  "scripts": {
+    "start": "npm run dev",
+    "login": "npx clasp login",
+    "pull": "npx clasp pull",
+    "push": "npx clasp push --force",
+    "dev": "npx live-server --port=8080 --open=DAMAN-SYSTEM/index.html"
+  },
+  "keywords": [
+    "apps-script",
+    "clasp"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@google/clasp": "^2.4.2",
+    "live-server": "^1.2.2"
+  }
+}

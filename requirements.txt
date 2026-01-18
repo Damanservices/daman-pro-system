@@ -1,0 +1,2 @@
+# This file is for Python dependencies. 
+# For this project, Node.js dependencies are managed in package.json.

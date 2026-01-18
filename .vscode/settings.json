@@ -1,0 +1,11 @@
+{
+    "geminicodeassist.agentDebugMode": true,
+    "geminicodeassist.agentYoloMode": true,
+    "geminicodeassist.codeGenerationPaneViewEnabled": true,
+    "geminicodeassist.inlineSuggestions.nextEditPredictions": true,
+    "geminicodeassist.verboseLogging": true,
+    "firebase.dataConnect.alwaysAllowMutationsInProduction": true,
+    "firebase.dataConnect.skipToAppFolderSelect": true,
+    "firebase.debug": true,
+    "firebase.emulators.exportOnExit": true
+}

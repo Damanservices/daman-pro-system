@@ -1,0 +1,15 @@
+{
+    "name": "daman-pro-system-backend",
+    "version": "1.0.0",
+    "description": "Google Apps Script Backend for DAMAN PRO SYSTEM",
+    "main": "Code.js",
+    "dependencies": {},
+    "devDependencies": {
+        "@types/google-apps-script": "^1.0.83"
+    },
+    "scripts": {
+        "push": "clasp push",
+        "pull": "clasp pull",
+        "watch": "clasp push --watch"
+    }
+}

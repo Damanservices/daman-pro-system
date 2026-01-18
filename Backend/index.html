@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #4f46e5;
+      --bg: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.8);
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      background-image:
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(79, 70, 229, 0.1) 0px, transparent 50%);
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 2.25rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .status-item {
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .status-label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .status-value {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-pending {
+      background: #fef9c3;
+      color: #854d0e;
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      border: none;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+    }
+
+    .log-container {
+      margin-top: 2rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.875rem;
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .log-entry {
+      margin-bottom: 0.25rem;
+    }
+
+    .log-time {
+      color: var(--success);
+      margin-right: 0.5rem;
+    }
+
+    .sheet-list {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .sheet-tag {
+      padding: 0.4rem 0.8rem;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      border: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🛡️</div>
+      <h1>DAMAN PRO</h1>
+      <p class="subtitle">Cloud Control Center & Data Synchronization</p>
+    </div>
+
+    <div class="card">
+      <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">System Health</h2>
+      <div id="status-container">
+        <p style="color: var(--text-muted)">Initialize system check to verify connectivity...</p>
+      </div>
+
+      <div class="status-grid" id="service-grid" style="display: none;">
+        <div class="status-item">
+          <div class="status-label">Google Sheets</div>
+          <div class="status-value" id="status-sheets">--</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">Google Calendar</div>
+          <div class="status-value" id="status-calendar">--</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">Google Tasks</div>
+          <div class="status-value" id="status-tasks">--</div>
+        </div>
+        <div class="status-item">
+          <div class="status-label">Overall Sync</div>
+          <div class="status-value" id="status-overall">--</div>
+        </div>
+      </div>
+
+      <div class="sheet-list" id="sheet-list" style="display: none;">
+        <!-- Sheets will be listed here -->
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" onclick="checkStatus()" id="check-btn">Run System Check</button>
+      <button class="btn-secondary" onclick="window.top.location.href = 'http://localhost:3000'">Open Next.js
+        Dev</button>
+      <button class="btn-secondary" onclick="seedData()">Seed Test Data</button>
+    </div>
+
+    <div class="log-container" id="logs">
+      <div class="log-entry"><span class="log-time">[SYSTEM]</span> Ready for instructions.</div>
+    </div>
+  </div>
+
+  <script>
+    function addLog(msg) {
+      const logs = document.getElementById('logs');
+      const time = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `<span class="log-time">[${time}]</span> ${msg}`;
+      logs.prepend(entry);
+    }
+
+    function checkStatus() {
+      const btn = document.getElementById('check-btn');
+      btn.disabled = true;
+      btn.innerText = 'Checking...';
+      addLog('Initiating connection test...');
+
+      google.script.run
+        .withSuccessHandler(function (res) {
+          btn.disabled = false;
+          btn.innerText = 'Run System Check';
+          updateUI(res);
+          addLog('Status check completed successfully.');
+        })
+        .withFailureHandler(function (err) {
+          btn.disabled = false;
+          btn.innerText = 'Run System Check';
+          addLog('ERROR: ' + err.message);
+        })
+        .handleRequest({ action: 'checkStatus' });
+    }
+
+    function seedData() {
+      addLog('Seeding test data...');
+      google.script.run
+        .withSuccessHandler(function (res) {
+          addLog('SUCCESS: ' + res.message);
+          checkStatus();
+        })
+        .handleRequest({ action: 'seedTestData' });
+    }
+
+    function updateUI(res) {
+      document.getElementById('status-container').style.display = 'none';
+      document.getElementById('service-grid').style.display = 'grid';
+      document.getElementById('sheet-list').style.display = 'flex';
+
+      const s = res;
+
+      const setStatus = (id, val) => {
+        const el = document.getElementById(id);
+        const isOk = val === 'Connected' || val === 'Healthy' || val === 'OK';
+        const badgeClass = isOk ? 'badge-success' : 'badge-error';
+        const displayVal = isOk ? val : (val.length > 20 ? val.substring(0, 17) + '...' : val);
+        el.innerHTML = `<span class="badge ${badgeClass}" title="${val}">${displayVal}</span>`;
+        if (!isOk) {
+          addLog(`Service ${id.replace('status-', '')} reported: ${val}`);
+        }
+      }
+
+      setStatus('status-sheets', s.services.sheets);
+      setStatus('status-calendar', s.services.calendar);
+      setStatus('status-tasks', s.services.tasks);
+      setStatus('status-overall', s.overall);
+
+      const sheetList = document.getElementById('sheet-list');
+      sheetList.innerHTML = '';
+      for (const [name, info] of Object.entries(s.sheets)) {
+        const tag = document.createElement('div');
+        tag.className = 'sheet-tag';
+        tag.innerHTML = `<strong>${name}</strong>: ${info.rows - 1} records`;
+        sheetList.appendChild(tag);
+      }
+    }
+  </script>
+</body>
+
+</html>

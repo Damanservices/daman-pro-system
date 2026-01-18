@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "googlecloudtools.firebase-dataconnect-vscode",
+        "google.geminicodeassist",
+        "ms-vscode.powershell",
+        "googlecloudtools.cloudcode"
+    ]
+}
