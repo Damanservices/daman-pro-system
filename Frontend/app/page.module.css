@@ -233,13 +233,14 @@
 
 .modalContent {
   background: var(--card-bg);
-  padding: 2rem;
-  border-radius: 20px;
-  width: 650px;
+  padding: 2.5rem;
+  border-radius: 28px;
+  width: 700px;
   max-width: 95vw;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border);
 }
 
 .formGroup {
@@ -343,15 +344,17 @@
 }
 
 .aiWindow {
-  width: 350px;
-  background: var(--card-bg);
-  border-radius: 20px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  width: 380px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: slideUp 0.3s ease-out;
+  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .aiHeader {
