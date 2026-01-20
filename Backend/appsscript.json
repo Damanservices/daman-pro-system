@@ -21,6 +21,11 @@
         "userSymbol": "Calendar",
         "version": "v3",
         "serviceId": "calendar"
+      },
+      {
+        "userSymbol": "BigQuery",
+        "version": "v2",
+        "serviceId": "bigquery"
       }
     ],
     "libraries": []
@@ -37,7 +42,8 @@
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/tasks",
     "https://www.googleapis.com/auth/calendar",
-    "https://www.googleapis.com/auth/cloud-platform"
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/bigquery"
   ],
   "webapp": {
     "executeAs": "USER_DEPLOYING",

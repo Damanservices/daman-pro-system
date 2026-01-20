@@ -5,7 +5,7 @@ import { db } from '../lib/firebase';
 import { ref, onValue, set, push, update, onDisconnect, remove, serverTimestamp } from "firebase/database";
 
 // --- CONFIGURATION ---
-const API_URL = 'https://script.google.com/macros/s/AKfycbx_qqGy9F98XECEw7Dne7MnOtnFV6kJOCMyQqpT7TOvkgvBTMmXMl4z-A_dhl6xjp4rqw/exec';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://script.google.com/macros/s/AKfycbydMLT4uqyYqnmADL64E6YQ4C5ivMRXWcfLM6hh5msJNvT2sp5-b91xlbTNBTaA9dHgJQ/exec';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -27,7 +27,7 @@ export default function Home() {
   const [employees, setEmployees] = useState([]);
   const [calendar, setCalendar] = useState([]);
   const [tasks, setTasks] = useState([]);
-  const [smartActions, setSmartActions] = useState([]);
+  const [smartFilters, setSmartFilters] = useState([]);
   const [dailyReports, setDailyReports] = useState([]);
   const [schema, setSchema] = useState([]);
   const [history, setHistory] = useState([]);
@@ -55,15 +55,114 @@ export default function Home() {
   const [floatingStates, setFloatingStates] = useState({ calendar: false, tasks: false, history: false });
   const [visibleColumns, setVisibleColumns] = useState({
     companies: {
-      'Company_Name': true, 'License_Expiry': true,
-      'Immigration_Expiry': true, 'Ejari_Expiry': true, 'Sponsor_Name': true,
+      // Auto-calculated/System fields (visible by default)
+      'Company_Name': true,
+      'License_Expiry': true,
+      'Immigration_Expiry': true,
+      'Ejari_Expiry': true,
+      'Status': true,
+      'Created_At': true,
+      'Last_Modified': true,
       'Actions': true,
-      'License_No': false, 'id': false, 'cached': false, 'rowId': false,
-      'Status': true, 'Company_ID': false, 'Created_At': false, 'Last_Modified': false
+      // Manual entry fields (hidden by default)
+      'Company_ID': false,
+      'License_No': false,
+      'License_Place': false,
+      'License_Issue_Date': false,
+      'License_Duration': false,
+      'Immigration_Issue_Date': false,
+      'Immigration_Duration': false,
+      'Ejari_Issue_Date': false,
+      'Ejari_Duration': false,
+      'Sponsor_Name': false,
+      'Signatory_Auth': false
     },
     employees: {
-      'Employee_Name': true, 'Company_Name': true, 'Visa_Last_Date': true, 'Change_Status_Last_Date': true, 'Visa_Expiry': true, 'Status': true, 'Actions': true,
-      'Employee_ID': false, 'id': false, 'rowId': false, 'Created_At': false, 'Last_Modified': false
+      // Auto-calculated/System fields (visible by default)
+      'Employee_Name': true,
+      'Company_Name': true,
+      'Visa_Expiry': true,
+      'Visa_Last_Date': true,
+      'Change_Status_Last_Date': true,
+      'Labour_Last_Day': true,
+      'Visa_Stamp_Last_Date': true,
+      'Status': true,
+      'Created_At': true,
+      'Last_Modified': true,
+      'Actions': true,
+      // Manual entry fields (hidden by default)
+      'Employee_ID': false,
+      'Residence_Status': false,
+      'Visa_Status': false,
+      'Designation': false,
+      'Passport_No': false,
+      'Birth_Date': false,
+      'Unifed_Number': false,
+      'Work_Permit_Package': false,
+      'LBR_Insurance': false,
+      'LBR_Payment': false,
+      'Entry_Permit_Status': false,
+      'Change_Status_Date': false,
+      'Contract_Submission': false,
+      'ILOE': false,
+      'Labour_Card_No': false,
+      'Labour_Card_Expiry': false,
+      'Medical_Application': false,
+      'Medical_Result': false,
+      'EID_Application': false,
+      'EID_Appointment_Date': false,
+      'Visa_Stamp_Status': false,
+      'Visa_Stamp_Expiry_Date': false,
+      'Workflow_Stage': false
+    },
+    calendar: {
+      'Event_Name': true,
+      'Date': true,
+      'Category': true,
+      'Status': true,
+      'Actions': true,
+      'Calendar_ID': false,
+      'Duration': false,
+      'Description': false
+    },
+    tasks: {
+      'Task_Name': true,
+      'Priority': true,
+      'Due_Date': true,
+      'Status': true,
+      'Actions': true,
+      'Task_ID': false,
+      'Assigned_To': false,
+      'Company': false
+    },
+    smartFilters: {
+      'Filter_Name': true,
+      'Category': true,
+      'Status': true,
+      'Last_Run': true,
+      'Actions': true,
+      'Filter_ID': false,
+      'Criteria': false,
+      'Auto_Mode': false
+    },
+    dailyReports: {
+      'Title': true,
+      'Status': true,
+      'Due_Date': true,
+      'Created_At': true,
+      'Updated_At': true,
+      'Actions': true,
+      'Task_ID': false,
+      'Description': false,
+      'Assigned_To': false,
+      'Related_Employee': false
+    },
+    history: {
+      'Timestamp': true,
+      'User': true,
+      'Action': true,
+      'Details': true,
+      'LOG_ID': false
     }
   });
 
@@ -213,7 +312,7 @@ export default function Home() {
         { action: 'readEmployees', setter: setEmployees },
         { action: 'readCalendar', setter: setCalendar },
         { action: 'readTasks', setter: setTasks },
-        { action: 'readSmartActions', setter: setSmartActions },
+        { action: 'readSmartFilters', setter: setSmartFilters },
         { action: 'readDailyReports', setter: setDailyReports },
         { action: 'readSchema', setter: setSchema },
         { action: 'readHistory', setter: setHistory }
@@ -259,7 +358,7 @@ export default function Home() {
       { path: 'employees', setter: setEmployees },
       { path: 'calendar', setter: setCalendar },
       { path: 'tasks', setter: setTasks },
-      { path: 'smartActions', setter: setSmartActions },
+      { path: 'smartFilters', setter: setSmartFilters },
       { path: 'dailyReports', setter: setDailyReports },
       { path: 'history', setter: setHistory }
     ];
@@ -304,8 +403,8 @@ export default function Home() {
   const fullSync = async () => {
     console.log('Starting Full Sync from Sheets to Firebase...');
     try {
-      const endpoints = ['readCompanies', 'readEmployees', 'readCalendar', 'readTasks', 'readSmartActions', 'readDailyReports', 'readHistory'];
-      const paths = ['companies', 'employees', 'calendar', 'tasks', 'smartActions', 'dailyReports', 'history'];
+      const endpoints = ['readCompanies', 'readEmployees', 'readCalendar', 'readTasks', 'readSmartFilters', 'readDailyReports', 'readHistory'];
+      const paths = ['companies', 'employees', 'calendar', 'tasks', 'smartFilters', 'dailyReports', 'history'];
 
       // Fetch all in parallel
       const responses = await Promise.all(endpoints.map(e => fetch(`${API_URL}?action=${e}`, { redirect: 'follow' }).then(res => res.json())));
@@ -456,7 +555,7 @@ export default function Home() {
     const pathMap = {
       'createCompany': 'companies', 'createEmployee': 'employees', 'createEvent': 'calendar',
       'createTask': 'tasks', 'createDailyReport': 'dailyReports', 'updateCompany': 'companies',
-      'updateEmployee': 'employees', 'updateSmartAction': 'smartActions', 'deleteCompany': 'companies',
+      'updateEmployee': 'employees', 'updateSmartFilter': 'smartFilters', 'deleteCompany': 'companies',
       'deleteEmployee': 'employees', 'deleteEvent': 'calendar', 'bulkDeleteCompanies': 'companies',
       'bulkDeleteEmployees': 'employees'
     };
@@ -589,7 +688,7 @@ export default function Home() {
         else if (activeTab === 'calendar') action = 'bulkDeleteCalendar';
         else if (activeTab === 'tasks') action = 'bulkDeleteTasks';
         else if (activeTab === 'dailyreports') action = 'bulkDeleteDailyReports';
-        else if (activeTab === 'smartactions') action = 'bulkDeleteSmartActions';
+        else if (activeTab === 'smartfilters') action = 'bulkDeleteSmartFilters';
         else {
           showToast('Bulk delete not available for this view', 'error');
           setConfirmModal({ open: false });
@@ -606,7 +705,7 @@ export default function Home() {
           case 'calendar': setCalendar(remaining); break;
           case 'tasks': setTasks(remaining); break;
           case 'dailyreports': setDailyReports(remaining); break;
-          case 'smartactions': setSmartActions(remaining); break;
+          case 'smartfilters': setSmartFilters(remaining); break;
         }
 
         // Close Modal & Reset Selection immediately
@@ -813,7 +912,7 @@ export default function Home() {
       case 'dailyreports': items = dailyReports; break;
       case 'schema': items = schema; break;
       case 'history': items = history; break;
-      case 'smartactions':
+      case 'smartfilters':
         // MERGE & FILTER: Show upcoming expiries (2 months / 60 days)
         const now = new Date();
         const sixtyDaysLater = new Date();
@@ -926,7 +1025,7 @@ export default function Home() {
     const totalPages = Math.ceil(items.length / pageSize);
     const start = (currentPage - 1) * pageSize;
     return items.slice(start, start + pageSize);
-  }, [companies, employees, calendar, tasks, smartActions, dailyReports, schema, history, activeTab, selectedCompany, search, sortConfig, pageSize, currentPage]);
+  }, [companies, employees, calendar, tasks, smartFilters, dailyReports, schema, history, activeTab, selectedCompany, search, sortConfig, pageSize, currentPage]);
 
   const toggleSelect = (id) => {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
@@ -1008,7 +1107,7 @@ export default function Home() {
         </div>
 
         <nav className={styles.menuTabs}>
-          {['dashboard', 'companies', 'employees', 'calendar', 'tasks', 'history', 'smartactions', 'dailyreports', 'schema'].map(t => (
+          {['dashboard', 'companies', 'employees', 'calendar', 'tasks', 'smartfilters', 'dailyreports', 'history', 'schema'].map(t => (
             <button
               key={t}
               className={`${styles.tab} ${activeTab === t ? styles.activeTab : ''}`}
@@ -1019,8 +1118,8 @@ export default function Home() {
                 if (window.innerWidth < 768) setIsSidebarOpen(false);
               }}
             >
-              {t === 'dashboard' ? '📊' : t === 'companies' ? '🏢' : t === 'employees' ? '👥' : t === 'calendar' ? '📅' : t === 'tasks' ? '✅' : t === 'history' ? '📜' : t === 'smartactions' ? '🤖' : t === 'dailyreports' ? '📑' : '⚙️'}
-              {isSidebarOpen && <span>{t === 'dailyreports' ? 'Daily Reports' : t === 'smartactions' ? 'Smart A.I' : t.charAt(0).toUpperCase() + t.slice(1)}</span>}
+              {t === 'dashboard' ? '📊' : t === 'companies' ? '🏢' : t === 'employees' ? '👥' : t === 'calendar' ? '📅' : t === 'tasks' ? '✅' : t === 'history' ? '📜' : t === 'smartfilters' ? '🔍' : t === 'dailyreports' ? '📑' : '⚙️'}
+              {isSidebarOpen && <span>{t === 'dailyreports' ? 'Daily Reports' : t === 'smartfilters' ? 'Smart Filters' : t.charAt(0).toUpperCase() + t.slice(1)}</span>}
             </button>
           ))}
         </nav>
@@ -1121,7 +1220,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {activeTab !== 'smartactions' && activeTab !== 'history' && (
+              {activeTab !== 'smartfilters' && activeTab !== 'history' && (
                 <button className={styles.btnPrimary} onClick={() => {
                   const typeMap = { 'companies': 'company', 'employees': 'employee', 'calendar': 'event', 'tasks': 'task', 'dailyreports': 'dailyReport', 'schema': 'schemaEntry' };
                   setModalType(typeMap[activeTab]);
@@ -1186,7 +1285,7 @@ export default function Home() {
                 { label: 'Total Employees', val: employees.length, icon: '👥', color: '#8b5cf6', link: 'employees' },
                 { label: 'Upcoming Events', val: calendar.length, icon: '📅', color: '#ec4899', link: 'calendar' },
                 { label: 'Pending Tasks', val: tasks.filter(t => t.Status !== 'Done').length, icon: '✅', color: '#10b981', link: 'tasks', filter: 'Pending' },
-                { label: 'Smart Alerts', val: sortedData.length, icon: '🚨', color: '#f59e0b', link: 'smartactions' } // Using sortedData count from memos? No, dashboard is separate.
+                { label: 'Smart Filters', val: sortedData.length, icon: '🔍', color: '#f59e0b', link: 'smartfilters' }
               ].map(s => (
                 <div
                   key={s.label}
@@ -1356,7 +1455,7 @@ export default function Home() {
                                     <button className={styles.btnActionIcon} title="Add to Tasks" onClick={() => handleSmartAction('task', row)}>✅</button>
                                   </>
                                 )}
-                                {activeTab === 'smartactions' && (
+                                {activeTab === 'smartfilters' && (
                                   <button className={styles.btnActionIcon} title="Send to Daily Report" onClick={() => handleSmartAction('dailyReport', row)}>📝</button>
                                 )}
                                 <button className={styles.btnActionIcon} title="Edit" onClick={() => handleEdit(row)}>✏️</button>
