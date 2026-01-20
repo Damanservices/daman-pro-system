@@ -7,5 +7,22 @@
     "firebase.dataConnect.alwaysAllowMutationsInProduction": true,
     "firebase.dataConnect.skipToAppFolderSelect": true,
     "firebase.debug": true,
-    "firebase.emulators.exportOnExit": true
+    "firebase.emulators.exportOnExit": true,
+    "workbench.editor.alwaysShowEditorActions": true,
+    "workbench.editor.autoLockGroups": {
+        "workbench.editorinputs.searchEditorInput": true,
+        "antigravity.globalArtifactsEditorInput": true,
+        "java.formatterSettingsEditor": true,
+        "antigravity.workflowEditor": true,
+        "antigravity.ruleEditor": true,
+        "antigravity.artifactsEditorInput": true,
+        "workbench.input.interactive": true,
+        "mainThreadWebview-markdown.preview": true,
+        "workbench.editors.gettingStartedInput": true
+    },
+    "workbench.editor.enablePreviewFromCodeNavigation": true,
+    "workbench.editor.enablePreviewFromQuickOpen": true,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.wrapTabs": true,
+    "workbench.editor.centeredLayoutFixedWidth": true
 }

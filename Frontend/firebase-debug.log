@@ -1,0 +1,293 @@
+[debug] [2026-01-18T18:01:20.416Z] ----------------------------------------------------------------------
+[debug] [2026-01-18T18:01:20.420Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\W11\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting --project daman-system
+[debug] [2026-01-18T18:01:20.421Z] CLI Version:   15.2.1
+[debug] [2026-01-18T18:01:20.421Z] Platform:      win32
+[debug] [2026-01-18T18:01:20.422Z] Node Version:  v25.2.1
+[debug] [2026-01-18T18:01:20.422Z] Time:          Sun Jan 18 2026 20:01:20 GMT+0200 (Eastern European Standard Time)
+[debug] [2026-01-18T18:01:20.423Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-01-18T18:01:24.369Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-01-18T18:01:24.370Z] > authorizing via signed-in user (damanproservices.official@gmail.com)
+[debug] [2026-01-18T18:01:24.371Z] [iam] checking project daman-system for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-01-18T18:01:24.378Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:24.379Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:24.383Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions [none]
+[debug] [2026-01-18T18:01:24.383Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions x-goog-quota-user=projects/daman-system
+[debug] [2026-01-18T18:01:24.383Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-01-18T18:01:25.432Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions 200
+[debug] [2026-01-18T18:01:25.432Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-01-18T18:01:25.433Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:25.433Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:25.433Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/daman-system [none]
+[debug] [2026-01-18T18:01:25.890Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/daman-system 200
+[debug] [2026-01-18T18:01:25.890Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/daman-system {"projectId":"daman-system","projectNumber":"195543055982","displayName":"DAMAN-SYSTEM","name":"projects/daman-system","resources":{"hostingSite":"daman-system","realtimeDatabaseInstance":"daman-system-default-rtdb"},"state":"ACTIVE","etag":"1_f790423e-bc15-44cb-be60-2d1ec70ff951"}
+[debug] [2026-01-18T18:01:32.501Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:32.501Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:32.502Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites pageToken=&pageSize=10
+[debug] [2026-01-18T18:01:33.224Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites 200
+[debug] [2026-01-18T18:01:33.224Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites {"sites":[{"name":"projects/daman-system/sites/daman-system","defaultUrl":"https://daman-system.web.app","appId":"1:195543055982:web:7a3e235745e991fa4db07f","type":"DEFAULT_SITE"}]}
+[debug] [2026-01-18T18:01:33.225Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:33.225Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:33.225Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:195543055982:web:7a3e235745e991fa4db07f/config [none]
+[debug] [2026-01-18T18:01:34.030Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:195543055982:web:7a3e235745e991fa4db07f/config 200
+[debug] [2026-01-18T18:01:34.030Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:195543055982:web:7a3e235745e991fa4db07f/config {"projectId":"daman-system","appId":"1:195543055982:web:7a3e235745e991fa4db07f","databaseURL":"https://daman-system-default-rtdb.firebaseio.com","storageBucket":"daman-system.firebasestorage.app","apiKey":"AIzaSyBORhorAy5jWy8TElW_rMbkHNhfpoqjwOU","authDomain":"daman-system.firebaseapp.com","messagingSenderId":"195543055982","projectNumber":"195543055982","version":"2"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-01-18T18:01:48.096Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:48.097Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:01:48.097Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites/daman-system [none]
+[debug] [2026-01-18T18:01:49.041Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites/daman-system 200
+[debug] [2026-01-18T18:01:49.041Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites/daman-system {"name":"projects/daman-system/sites/daman-system","defaultUrl":"https://daman-system.web.app","appId":"1:195543055982:web:7a3e235745e991fa4db07f","type":"DEFAULT_SITE"}
+[info]   ▲ Next.js 14.2.3
+
+[info] 
+
+[info]    Creating an optimized production build ...
+
+[info]  ✓ Compiled successfully
+
+[info]    Linting and checking validity of types ...
+
+[info] 
+./app/layout.js
+19:17  Warning: Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+./app/page.js
+393:6  Warning: React Hook useMemo has a missing dependency: 'history'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+
+[info]    Collecting page data ...
+
+[info]    Generating static pages (0/5) ...
+
+[info]    Generating static pages (1/5) 
+
+[info]    Generating static pages (2/5) 
+   Generating static pages (3/5) 
+
+[info]  ✓ Generating static pages (5/5)
+
+[info]    Finalizing page optimization ...
+
+[info]    Collecting build traces ...
+
+[info] 
+
+[info] Route (app)                              Size     First Load JS
+┌ ○ /                                    85.4 kB         172 kB
+└ ○ /_not-found                          871 B          87.9 kB
++ First Load JS shared by all            87.1 kB
+  ├ chunks/23-5454537ffec4fcf0.js        31.5 kB
+  ├ chunks/fd9d1056-d76e57cce6379a76.js  53.6 kB
+  └ other shared chunks (total)          1.96 kB
+
+
+[info] 
+○  (Static)  prerendered as static content
+
+
+[debug] [2026-01-18T18:02:21.274Z] Error: EBUSY: resource busy or locked, rmdir 'D:\DAMAN-SYSTEM\daman-pro-system\.firebase\daman-system\functions'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-01-18T18:05:55.456Z] ----------------------------------------------------------------------
+[debug] [2026-01-18T18:05:55.459Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\W11\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting --project daman-system
+[debug] [2026-01-18T18:05:55.460Z] CLI Version:   15.2.1
+[debug] [2026-01-18T18:05:55.460Z] Platform:      win32
+[debug] [2026-01-18T18:05:55.460Z] Node Version:  v25.2.1
+[debug] [2026-01-18T18:05:55.460Z] Time:          Sun Jan 18 2026 20:05:55 GMT+0200 (Eastern European Standard Time)
+[debug] [2026-01-18T18:05:55.461Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-01-18T18:05:59.608Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-01-18T18:05:59.608Z] > authorizing via signed-in user (damanproservices.official@gmail.com)
+[debug] [2026-01-18T18:05:59.609Z] [iam] checking project daman-system for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-01-18T18:05:59.613Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:05:59.614Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:05:59.616Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions [none]
+[debug] [2026-01-18T18:05:59.616Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions x-goog-quota-user=projects/daman-system
+[debug] [2026-01-18T18:05:59.616Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-01-18T18:06:00.544Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions 200
+[debug] [2026-01-18T18:06:00.545Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-01-18T18:06:00.546Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:06:00.546Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:06:00.547Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/daman-system [none]
+[debug] [2026-01-18T18:06:00.966Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/daman-system 200
+[debug] [2026-01-18T18:06:00.966Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/daman-system {"projectId":"daman-system","projectNumber":"195543055982","displayName":"DAMAN-SYSTEM","name":"projects/daman-system","resources":{"hostingSite":"daman-system","realtimeDatabaseInstance":"daman-system-default-rtdb"},"state":"ACTIVE","etag":"1_f790423e-bc15-44cb-be60-2d1ec70ff951"}
+[debug] [2026-01-18T18:06:06.256Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:06:06.257Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:06:06.257Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites pageToken=&pageSize=10
+[debug] [2026-01-18T18:06:07.220Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites 200
+[debug] [2026-01-18T18:06:07.220Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites {"sites":[{"name":"projects/daman-system/sites/daman-system","defaultUrl":"https://daman-system.web.app","appId":"1:195543055982:web:7a3e235745e991fa4db07f","type":"DEFAULT_SITE"}]}
+[debug] [2026-01-18T18:06:07.220Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:06:07.220Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:06:07.221Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:195543055982:web:7a3e235745e991fa4db07f/config [none]
+[debug] [2026-01-18T18:06:08.067Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:195543055982:web:7a3e235745e991fa4db07f/config 200
+[debug] [2026-01-18T18:06:08.067Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:195543055982:web:7a3e235745e991fa4db07f/config {"projectId":"daman-system","appId":"1:195543055982:web:7a3e235745e991fa4db07f","databaseURL":"https://daman-system-default-rtdb.firebaseio.com","storageBucket":"daman-system.firebasestorage.app","apiKey":"AIzaSyBORhorAy5jWy8TElW_rMbkHNhfpoqjwOU","authDomain":"daman-system.firebaseapp.com","messagingSenderId":"195543055982","projectNumber":"195543055982","version":"2"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-01-18T18:06:22.950Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:06:22.950Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:06:22.951Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites/daman-system [none]
+[debug] [2026-01-18T18:06:23.880Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites/daman-system 200
+[debug] [2026-01-18T18:06:23.880Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites/daman-system {"name":"projects/daman-system/sites/daman-system","defaultUrl":"https://daman-system.web.app","appId":"1:195543055982:web:7a3e235745e991fa4db07f","type":"DEFAULT_SITE"}
+[info]   ▲ Next.js 14.2.3
+
+[info] 
+
+[info]    Creating an optimized production build ...
+
+[info]  ✓ Compiled successfully
+
+[info]    Linting and checking validity of types ...
+
+[info] 
+./app/layout.js
+19:17  Warning: Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+./app/page.js
+393:6  Warning: React Hook useMemo has a missing dependency: 'history'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+
+[info]    Collecting page data ...
+
+[info] PageNotFoundError: Cannot find module for page: /favicon.ico
+    at getPagePath (D:\DAMAN-SYSTEM\daman-pro-system\Frontend\node_modules\next\dist\server\require.js:94:15)
+    at requirePage (D:\DAMAN-SYSTEM\daman-pro-system\Frontend\node_modules\next\dist\server\require.js:99:22)
+    at D:\DAMAN-SYSTEM\daman-pro-system\Frontend\node_modules\next\dist\server\load-components.js:98:84
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async loadComponentsImpl (D:\DAMAN-SYSTEM\daman-pro-system\Frontend\node_modules\next\dist\server\load-components.js:98:26)
+    at async D:\DAMAN-SYSTEM\daman-pro-system\Frontend\node_modules\next\dist\build\utils.js:1116:32
+    at async Span.traceAsyncFn (D:\DAMAN-SYSTEM\daman-pro-system\Frontend\node_modules\next\dist\trace\trace.js:154:20) {
+  code: 'ENOENT'
+}
+
+[info] 
+> Build error occurred
+Error: Failed to collect page data for /favicon.ico
+    at D:\DAMAN-SYSTEM\daman-pro-system\Frontend\node_modules\next\dist\build\utils.js:1268:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  type: 'Error'
+}
+
+[debug] [2026-01-18T18:06:49.744Z] Error: ENOENT: no such file or directory, open 'D:\DAMAN-SYSTEM\daman-pro-system\Frontend\.next\export-marker.json'
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-01-18T18:15:01.955Z] ----------------------------------------------------------------------
+[debug] [2026-01-18T18:15:01.959Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\W11\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting --project daman-system
+[debug] [2026-01-18T18:15:01.959Z] CLI Version:   15.2.1
+[debug] [2026-01-18T18:15:01.959Z] Platform:      win32
+[debug] [2026-01-18T18:15:01.960Z] Node Version:  v25.2.1
+[debug] [2026-01-18T18:15:01.960Z] Time:          Sun Jan 18 2026 20:15:01 GMT+0200 (Eastern European Standard Time)
+[debug] [2026-01-18T18:15:01.960Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-01-18T18:15:05.456Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-01-18T18:15:05.456Z] > authorizing via signed-in user (damanproservices.official@gmail.com)
+[debug] [2026-01-18T18:15:05.457Z] [iam] checking project daman-system for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-01-18T18:15:05.459Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:05.460Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:05.462Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions [none]
+[debug] [2026-01-18T18:15:05.462Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions x-goog-quota-user=projects/daman-system
+[debug] [2026-01-18T18:15:05.462Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-01-18T18:15:06.397Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions 200
+[debug] [2026-01-18T18:15:06.398Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/daman-system:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-01-18T18:15:06.398Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:06.399Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:06.399Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/daman-system [none]
+[debug] [2026-01-18T18:15:06.842Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/daman-system 200
+[debug] [2026-01-18T18:15:06.843Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/daman-system {"projectId":"daman-system","projectNumber":"195543055982","displayName":"DAMAN-SYSTEM","name":"projects/daman-system","resources":{"hostingSite":"daman-system","realtimeDatabaseInstance":"daman-system-default-rtdb"},"state":"ACTIVE","etag":"1_f790423e-bc15-44cb-be60-2d1ec70ff951"}
+[debug] [2026-01-18T18:15:11.955Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:11.956Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:11.956Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites pageToken=&pageSize=10
+[debug] [2026-01-18T18:15:13.009Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites 200
+[debug] [2026-01-18T18:15:13.009Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites {"sites":[{"name":"projects/daman-system/sites/daman-system","defaultUrl":"https://daman-system.web.app","appId":"1:195543055982:web:7a3e235745e991fa4db07f","type":"DEFAULT_SITE"}]}
+[debug] [2026-01-18T18:15:13.010Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:13.010Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:13.011Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:195543055982:web:7a3e235745e991fa4db07f/config [none]
+[debug] [2026-01-18T18:15:14.008Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:195543055982:web:7a3e235745e991fa4db07f/config 200
+[debug] [2026-01-18T18:15:14.009Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:195543055982:web:7a3e235745e991fa4db07f/config {"projectId":"daman-system","appId":"1:195543055982:web:7a3e235745e991fa4db07f","databaseURL":"https://daman-system-default-rtdb.firebaseio.com","storageBucket":"daman-system.firebasestorage.app","apiKey":"AIzaSyBORhorAy5jWy8TElW_rMbkHNhfpoqjwOU","authDomain":"daman-system.firebaseapp.com","messagingSenderId":"195543055982","projectNumber":"195543055982","version":"2"}
+[info] 
+   Thank you for trying our early preview of Next.js support on Firebase Hosting.
+   During the preview, support is best-effort and breaking changes can be expected. Proceed with caution.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/nextjs
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2026-01-18T18:15:26.458Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:26.458Z] Checked if tokens are valid: true, expires at: 1768761764849
+[debug] [2026-01-18T18:15:26.459Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites/daman-system [none]
+[debug] [2026-01-18T18:15:27.391Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites/daman-system 200
+[debug] [2026-01-18T18:15:27.391Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/daman-system/sites/daman-system {"name":"projects/daman-system/sites/daman-system","defaultUrl":"https://daman-system.web.app","appId":"1:195543055982:web:7a3e235745e991fa4db07f","type":"DEFAULT_SITE"}
+[info]   ▲ Next.js 14.2.3
+
+[info] 
+
+[info]    Creating an optimized production build ...
+
+[info]  ✓ Compiled successfully
+
+[info]    Linting and checking validity of types ...
+
+[info] 
+./app/layout.js
+19:17  Warning: Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+./app/page.js
+393:6  Warning: React Hook useMemo has a missing dependency: 'history'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+456:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+
+[info]    Collecting page data ...
+
+[info]    Generating static pages (0/4) ...
+
+[info]    Generating static pages (1/4) 
+
+[info]    Generating static pages (2/4) 
+
+[info]    Generating static pages (3/4) 
+
+[info]  ✓ Generating static pages (4/4)
+
+[info]    Finalizing page optimization ...
+
+[info]    Collecting build traces ...
+
+[info] 
+
+[info] Route (app)                              Size     First Load JS
+┌ ○ /                                    85.3 kB         172 kB
+└ ○ /_not-found                          871 B          87.9 kB
++ First Load JS shared by all            87.1 kB
+  ├ chunks/23-5454537ffec4fcf0.js        31.5 kB
+  ├ chunks/fd9d1056-d76e57cce6379a76.js  53.6 kB
+  └ other shared chunks (total)          1.96 kB
+
+
+[info] 
+○  (Static)  prerendered as static content
+
+
+[debug] [2026-01-18T18:16:07.570Z] Error: EBUSY: resource busy or locked, rmdir 'D:\DAMAN-SYSTEM\daman-pro-system\.firebase\daman-system\functions'
+[error] 
+[error] Error: An unexpected error has occurred.

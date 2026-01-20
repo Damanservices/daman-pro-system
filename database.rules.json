@@ -1,6 +1,23 @@
 {
     "rules": {
         ".read": "true",
-        ".write": "true"
+        ".write": "true",
+        "locks": {
+            ".indexOn": [
+                "expiresAt"
+            ]
+        },
+        "companies": {
+            ".indexOn": [
+                "Last_Updated",
+                "Company_Name"
+            ]
+        },
+        "employees": {
+            ".indexOn": [
+                "Last_Updated",
+                "Passport_No"
+            ]
+        }
     }
 }

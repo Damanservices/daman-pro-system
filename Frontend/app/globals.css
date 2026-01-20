@@ -28,6 +28,11 @@
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
     --table-header: #0f172a;
     --table-row-hover: #1e293b;
+    --input-bg: #1e293b;
+}
+
+[data-theme='dark'] ::-webkit-calendar-picker-indicator {
+    filter: invert(1);
 }
 
 * {

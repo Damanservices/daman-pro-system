@@ -7,15 +7,17 @@ const SMART_ACTIONS_SHEET = 'Smart_Actions_Sheet';
 const DAILY_REPORT_SHEET = 'Daily_Report_Sheet';
 const MASTER_SCHEMA = 'Master_Schema_Sheet';
 const HISTORY_SHEET = 'History_Sheet';
+const TRASH_BIN_SHEET = 'Trash_Bin_Sheet';
 
-const COMPANY_HEADERS = ["Company_ID", "Company_Name", "License_No", "License_Place", "License_Issue_Date", "License_Duration", "License_Expiry", "Immigration_Issue_Date", "Immigration_Duration", "Immigration_Expiry", "Ejari_Issue_Date", "Ejari_Duration", "Ejari_Expiry", "Sponsor_Name", "Signatory_Auth", "Created_At", "Status"];
-const EMPLOYEE_HEADERS = ["Employee_ID", "Employee_Name", "Company_Name", "Residence_Status", "Designation", "Passport_No", "Passport_Expiry", "Visa_No", "Visa_Expiry", "Visa_Last_Day", "Labour_Card_No", "Labour_Card_Expiry", "Labour_Last_Day", "Emirates_ID_No", "Emirates_ID_Expiry", "Visa_Stamp", "Visa_Stamp_Expiry_Date", "Visa_Stamp_Last_Date", "Status", "Workflow_Stage", "Created_At"];
-const CALENDAR_HEADERS = ["Event Name", "Date", "Duration", "Description", "Category", "Status"];
-const TASKS_HEADERS = ["Task Name", "Priority", "Due Date", "Assigned To", "Status", "Company"];
-const SMART_ACTIONS_HEADERS = ["Action Name", "Category", "Trigger", "Status", "Last Run", "Auto Mode"];
-const DAILY_REPORT_HEADERS = ["Task_ID", "Title", "Description", "Assigned_To", "Related_Employee", "Status", "Due_Date", "Created_At", "Updated_At"];
-const SCHEMA_HEADERS = ["Sheet", "Field", "Type", "Required", "Visible"];
-const HISTORY_HEADERS = ["Timestamp", "User", "Action", "Details"];
+const COMPANY_HEADERS = ["id", "Company_ID", "Company_Name", "License_No", "License_Place", "License_Issue_Date", "License_Duration", "License_Expiry", "Immigration_Issue_Date", "Immigration_Duration", "Immigration_Expiry", "Ejari_Issue_Date", "Ejari_Duration", "Ejari_Expiry", "Sponsor_Name", "Signatory_Auth", "Created_At", "Last_Modified", "Status"];
+const EMPLOYEE_HEADERS = ["id", "Employee_ID", "Employee_Name", "Company_Name", "Residence_Status", "Visa_Status", "Designation", "Passport_No", "Passport_Expiry", "Visa_No", "Visa_Expiry", "Visa_Last_Date", "Labour_Card_No", "Labour_Card_Expiry", "Labour_Last_Day", "Emirates_ID_No", "Emirates_ID_Expiry", "Entry_Permit_Status", "Entry_Date", "Change_Status_Date", "Change_Status_Last_Date", "Contract_Submission", "Medical_Application", "EID_Application", "Visa_Stamp_Expiry_Date", "Visa_Stamp_Last_Date", "Status", "Workflow_Stage", "Created_At", "Last_Modified"];
+const CALENDAR_HEADERS = ["id", "Event Name", "Date", "Duration", "Description", "Category", "Status"];
+const TASKS_HEADERS = ["id", "Task Name", "Priority", "Due Date", "Assigned To", "Status", "Company"];
+const TRASH_TOKENS = ["id", "Original_Sheet", "Deleted_At", "Reason", "Original_Data_JSON"];
+const SMART_ACTIONS_HEADERS = ["id", "Action Name", "Category", "Trigger", "Status", "Last Run", "Auto Mode"];
+const DAILY_REPORT_HEADERS = ["id", "Task_ID", "Title", "Description", "Assigned_To", "Related_Employee", "Status", "Due_Date", "Created_At", "Updated_At"];
+const SCHEMA_HEADERS = ["id", "Sheet", "Field", "Type", "Required", "Visible"];
+const HISTORY_HEADERS = ["id", "Timestamp", "User", "Action", "Details"];
 
 function doGet(e) {
     if (e && e.parameter && e.parameter.action === 'authorize') {
@@ -77,13 +79,25 @@ function handleRequest(e) {
             case 'createEvent': result = createSyncEvent(data); break;
             case 'createTask': result = createSyncTask(data); break;
             case 'createDailyReport': result = createGenericRow(DAILY_REPORT_SHEET, DAILY_REPORT_HEADERS, data); break;
-            case 'updateCompany': result = updateRow(MASTER_COMPANIES, data); break;
-            case 'updateEmployee': result = updateEmployeeSync(data); break;
+            case 'updateCompany':
+                ensureRowId(MASTER_COMPANIES, "Company_Name", data);
+                result = updateRow(MASTER_COMPANIES, data);
+                break;
+            case 'updateEmployee':
+                ensureRowId(MASTER_EMPLOYEES, "Passport_No", data);
+                result = updateEmployeeSync(data);
+                break;
             case 'updateSmartAction': result = updateRow(SMART_ACTIONS_SHEET, data); break;
             case 'deleteCompany': result = deleteCompany(data); break;
             case 'deleteEmployee': result = deleteEmployeeSync(data); break;
             case 'deleteEvent': result = deleteRow(CALENDAR_SHEET, data); break;
             case 'bulkDeleteEmployees': result = bulkDeleteEmployees(data.ids); break;
+            case 'bulkDeleteCompanies': result = bulkDeleteCompanies(data.ids); break;
+            case 'bulkDeleteCalendar': result = bulkDeleteGeneric(CALENDAR_SHEET, data.ids, "Event"); break;
+            case 'bulkDeleteTasks': result = bulkDeleteGeneric(TASKS_SHEET, data.ids, "Task"); break;
+            case 'bulkDeleteDailyReports': result = bulkDeleteGeneric(DAILY_REPORT_SHEET, data.ids, "Report"); break;
+            case 'bulkDeleteSmartActions': result = bulkDeleteGeneric(SMART_ACTIONS_SHEET, data.ids, "Rule"); break;
+            case 'resetSystem': result = resetAllData(); break;
             case 'seedTestData': result = seedTestData(); break;
             case 'updateSchema': result = updateRow(MASTER_SCHEMA, data); break;
             case 'createSchemaField': result = createSchemaField(data); break;
@@ -127,7 +141,8 @@ function initMasterSheets(forceFormat = false) {
         { name: TASKS_SHEET, headers: TASKS_HEADERS },
         { name: SMART_ACTIONS_SHEET, headers: SMART_ACTIONS_HEADERS },
         { name: DAILY_REPORT_SHEET, headers: DAILY_REPORT_HEADERS },
-        { name: HISTORY_SHEET, headers: HISTORY_HEADERS }
+        { name: HISTORY_SHEET, headers: HISTORY_HEADERS },
+        { name: TRASH_BIN_SHEET, headers: TRASH_TOKENS }
     ];
 
     configs.forEach(cfg => {
@@ -195,8 +210,9 @@ function getSheetData(name) {
     if (vals.length <= 1) return { status: 'success', data: [] };
     const headers = vals[0];
     const data = vals.slice(1).map((r, i) => {
-        let o = { id: i + 2 };
+        let o = {};
         headers.forEach((h, j) => { o[h] = r[j]; });
+        if (!o.id) o.id = "row_" + (i + 2); // Fallback for old rows
         return o;
     });
 
@@ -226,6 +242,7 @@ function createCompany(data) {
 
         const row = COMPANY_HEADERS.map(h => {
             if (h === "Created_At") return new Date();
+            if (h === "Last_Modified") return new Date();
             if (h === "Company_ID") return "COMP-" + Math.floor(Math.random() * 10000);
             return data[h] || data[h.replace(/_/g, " ")] || "";
         });
@@ -249,31 +266,56 @@ function createCompany(data) {
 function createEmployee(data) {
     const lock = LockService.getScriptLock();
     try {
-        lock.waitLock(10000);
+        lock.waitLock(15000);
         const ss = SpreadsheetApp.openById(SHEET_ID);
         const ms = ss.getSheetByName(MASTER_EMPLOYEES);
+
         const company = data["Company_Name"] || data["Company"];
         const idPass = data["Passport_No"] || data["ID/Passport"];
+        const empName = data["Employee_Name"];
 
-        if (!company || !idPass) return { status: 'error', message: 'Company and Passport are required' };
+        if (!company || !idPass || !empName) return { status: 'error', message: 'Name, Company and Passport are required' };
 
-        const cs = ss.getSheetByName(company);
-        if (!cs) return { status: 'error', message: 'Company sheet not found: ' + company };
-
+        // 1. DEDUPLICATION CHECK
         const mv = ms.getDataRange().getValues();
         const idIdx = EMPLOYEE_HEADERS.indexOf("Passport_No");
-        if (mv.some(r => r[idIdx].toString().toLowerCase() === idPass.toString().toLowerCase())) {
-            return { status: 'error', message: 'Employee already exists' };
+        const nameIdx = EMPLOYEE_HEADERS.indexOf("Employee_Name");
+
+        let existingRowIndex = -1;
+        for (let i = 1; i < mv.length; i++) {
+            if (String(mv[i][idIdx]).toLowerCase() === String(idPass).toLowerCase()) {
+                existingRowIndex = i + 1;
+                break;
+            }
         }
 
+        if (existingRowIndex !== -1) {
+            // Use existing ID if matching
+            data.rowId = existingRowIndex;
+            lock.releaseLock(); // Important: release before calling update which will re-lock
+            return updateEmployeeSync(data);
+        }
+
+        // 2. CREATE NEW
         const row = EMPLOYEE_HEADERS.map(h => {
             if (h === "Created_At") return new Date();
+            if (h === "Last_Modified") return new Date();
             if (h === "Employee_ID") return "EMP-" + Math.floor(Math.random() * 10000);
             return data[h] || data[h.replace(/_/g, " ")] || "";
         });
         ms.appendRow(row);
-        cs.appendRow(row);
-        logHistory("SYSTEM", "Created Employee", data["Employee_Name"]);
+
+        const cs = ss.getSheetByName(company);
+        if (cs) {
+            cs.appendRow(row);
+        } else {
+            const newSheet = ss.insertSheet(company);
+            newSheet.appendRow(EMPLOYEE_HEADERS);
+            newSheet.appendRow(row);
+            formatToTable(newSheet, EMPLOYEE_HEADERS.length);
+        }
+
+        logHistory("SYSTEM", "Created Employee", empName);
         clearCache(MASTER_EMPLOYEES);
         clearCache(company);
         return { status: 'success', message: 'Employee added successfully' };
@@ -306,15 +348,40 @@ function updateRow(sheetName, data) {
     const lock = LockService.getScriptLock();
     try {
         lock.waitLock(10000);
-        const id = parseInt(data.rowId || data.id);
-        if (!id) return { status: 'error', message: 'ID/RowID required for update' };
-        const s = SpreadsheetApp.openById(SHEET_ID).getSheetByName(sheetName);
+        const ss = SpreadsheetApp.openById(SHEET_ID);
+        const s = ss.getSheetByName(sheetName);
         if (!s) return { status: 'error', message: 'Sheet not found: ' + sheetName };
-        const headers = s.getRange(1, 1, 1, s.getLastColumn()).getValues()[0];
-        const row = headers.map(h => data[h] !== undefined ? data[h] : "");
-        s.getRange(id, 1, 1, headers.length).setValues([row]);
+
+        const vals = s.getDataRange().getValues();
+        const headers = vals[0];
+        const idIdx = headers.indexOf("id");
+        let rowIndex = -1;
+
+        // 1. Find Row by ID
+        if (data.id) {
+            for (let i = 1; i < vals.length; i++) {
+                if (String(vals[i][idIdx]) === String(data.id)) {
+                    rowIndex = i + 1;
+                    break;
+                }
+            }
+        }
+
+        // 2. Fallback to rowId if numeric (Legacy)
+        if (rowIndex === -1 && data.rowId && !isNaN(data.rowId)) {
+            rowIndex = parseInt(data.rowId);
+        }
+
+        if (rowIndex === -1) return { status: 'error', message: 'Record not found for ID: ' + data.id };
+
+        const row = headers.map((h, j) => {
+            if (h === "Last_Modified" || h === "Updated_At") return new Date();
+            return data[h] !== undefined ? data[h] : vals[rowIndex - 1][j];
+        });
+
+        s.getRange(rowIndex, 1, 1, headers.length).setValues([row]);
         clearCache(sheetName);
-        return { status: 'success', message: 'Row updated in ' + sheetName };
+        return { status: 'success', message: 'Row updated and synced' };
     } catch (e) {
         return { status: 'error', message: 'Update error: ' + e.toString() };
     } finally {
@@ -357,26 +424,71 @@ function updateEmployeeSync(data) {
     }
 }
 
+/* Soft Delete Helper */
+function moveToTrash(sheetName, rowData, reason = "Manual Delete") {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    let bin = ss.getSheetByName(TRASH_BIN_SHEET);
+    if (!bin) {
+        bin = ss.insertSheet(TRASH_BIN_SHEET);
+        bin.appendRow(TRASH_TOKENS);
+    }
+    const trashRow = [sheetName, new Date(), reason, JSON.stringify(rowData)];
+    bin.appendRow(trashRow);
+}
+
 function deleteCompany(data) {
     const lock = LockService.getScriptLock();
     try {
         lock.waitLock(10000);
         const name = data["Company_Name"] || data["Company Name"];
+        const id = data.id;
         const ss = SpreadsheetApp.openById(SHEET_ID);
         const s = ss.getSheetByName(MASTER_COMPANIES);
         const vals = s.getDataRange().getValues();
-        const nameIdx = COMPANY_HEADERS.indexOf("Company_Name");
+        const headers = vals[0];
+        const idIdx = headers.indexOf("id");
+        const nameIdx = headers.indexOf("Company_Name");
+
+        let targetRow = -1;
         for (let i = 1; i < vals.length; i++) {
-            if (vals[i][nameIdx] === name) {
-                s.deleteRow(i + 1);
+            if (id && String(vals[i][idIdx]) === String(id)) {
+                targetRow = i + 1;
+                break;
+            } else if (!id && vals[i][nameIdx] === name) {
+                targetRow = i + 1;
                 break;
             }
         }
+
+        if (targetRow !== -1) {
+            // Soft Delete: Move to Trash
+            const rowData = {};
+            headers.forEach((h, k) => rowData[h] = vals[targetRow - 1][k]);
+            moveToTrash(MASTER_COMPANIES, rowData, "Company Delete");
+            s.deleteRow(targetRow);
+        }
+
+        // Cascading Soft Delete: Employees
+        const ms = ss.getSheetByName(MASTER_EMPLOYEES);
+        const mv = ms.getDataRange().getValues();
+        const compIdx = EMPLOYEE_HEADERS.indexOf("Company_Name");
+        // We iterate backwards to delete safely
+        for (let i = mv.length - 1; i >= 1; i--) {
+            if (mv[i][compIdx] === name) {
+                const empData = {};
+                EMPLOYEE_HEADERS.forEach((h, k) => empData[h] = mv[i][k]);
+                moveToTrash(MASTER_EMPLOYEES, empData, "Cascade - Company Delete");
+                ms.deleteRow(i + 1);
+            }
+        }
+
         const cs = ss.getSheetByName(name);
-        if (cs) ss.deleteSheet(cs);
+        if (cs) ss.deleteSheet(cs); // Company Sheet is structural, so we hard delete it, but data is in Trash Bin potentially? To be safe, we rely on Master Employee table trash.
+
         clearCache(MASTER_COMPANIES);
+        clearCache(MASTER_EMPLOYEES);
         clearCache(name);
-        return { status: 'success', message: 'Company and its sheet deleted' };
+        return { status: 'success', message: 'Company and related records moved to Trash Bin' };
     } catch (e) {
         return { status: 'error', message: 'Delete Error: ' + e.toString() };
     } finally {
@@ -388,6 +500,7 @@ function deleteEmployeeSync(data) {
     const lock = LockService.getScriptLock();
     try {
         lock.waitLock(10000);
+        const id = data.id;
         const idPass = data["Passport_No"] || data["ID/Passport"];
         const company = data["Company_Name"] || data["Company"];
         const ss = SpreadsheetApp.openById(SHEET_ID);
@@ -395,9 +508,17 @@ function deleteEmployeeSync(data) {
         // Delete from master
         const ms = ss.getSheetByName(MASTER_EMPLOYEES);
         const mv = ms.getDataRange().getValues();
-        const idIdx = EMPLOYEE_HEADERS.indexOf("Passport_No");
+        const headers = mv[0];
+        const idIdx = headers.indexOf("id");
+        const passIdx = headers.indexOf("Passport_No");
+
         for (let i = 1; i < mv.length; i++) {
-            if (mv[i][idIdx] === idPass) {
+            if ((id && String(mv[i][idIdx]) === String(id)) || (!id && mv[i][passIdx] === idPass)) {
+                // Soft Delete
+                const empData = {};
+                headers.forEach((h, k) => empData[h] = mv[i][k]);
+                moveToTrash(MASTER_EMPLOYEES, empData, "Employee Delete");
+
                 ms.deleteRow(i + 1);
                 break;
             }
@@ -408,8 +529,9 @@ function deleteEmployeeSync(data) {
             const cs = ss.getSheetByName(company);
             if (cs) {
                 const cv = cs.getDataRange().getValues();
+                const cIdIdx = cv[0].indexOf("Passport_No"); // Dynamic find
                 for (let i = 1; i < cv.length; i++) {
-                    if (cv[i][idIdx] === idPass) {
+                    if (cv[i][cIdIdx] === idPass) {
                         cs.deleteRow(i + 1);
                         break;
                     }
@@ -418,7 +540,7 @@ function deleteEmployeeSync(data) {
             }
         }
         clearCache(MASTER_EMPLOYEES);
-        return { status: 'success', message: 'Employee deleted and synced' };
+        return { status: 'success', message: 'Employee moved to Trash Bin' };
     } catch (e) {
         return { status: 'error', message: 'Delete Error: ' + e.toString() };
     } finally {
@@ -427,9 +549,148 @@ function deleteEmployeeSync(data) {
 }
 
 function bulkDeleteEmployees(items) {
-    if (!Array.isArray(items)) return { status: 'error', message: 'Items must be an array' };
-    items.forEach(item => deleteEmployeeSync(item));
-    return { status: 'success', message: 'Bulk delete completed' };
+    const lock = LockService.getScriptLock();
+    try {
+        lock.waitLock(30000);
+        if (!Array.isArray(items)) return { status: 'error', message: 'Items must be an array' };
+
+        const ss = SpreadsheetApp.openById(SHEET_ID);
+        const ms = ss.getSheetByName(MASTER_EMPLOYEES);
+        const mv = ms.getDataRange().getValues();
+        const headers = mv[0];
+        const idIdx = headers.indexOf("id");
+        const passIdx = headers.indexOf("Passport_No");
+
+        items.forEach(data => {
+            const id = data.id;
+            const idPass = String(data["Passport_No"] || data["ID/Passport"]).toLowerCase();
+            const company = data["Company_Name"] || data["Company"];
+
+            for (let i = mv.length - 1; i >= 1; i--) {
+                const matchId = id && String(mv[i][idIdx]) === String(id);
+                const matchPass = !id && String(mv[i][passIdx]).toLowerCase() === idPass;
+
+                if (matchId || matchPass) {
+                    const empData = {};
+                    headers.forEach((h, k) => empData[h] = mv[i][k]);
+                    moveToTrash(MASTER_EMPLOYEES, empData, "Bulk Employee Delete");
+                    masterIndicesToDelete.push(i + 1);
+
+                    if (company) {
+                        if (!deleteMap[company]) deleteMap[company] = [];
+                        deleteMap[company].push(idPass);
+                    }
+                    break;
+                }
+            }
+        });
+
+        // 1. Delete from Master (Backwards)
+        masterIndicesToDelete.sort((a, b) => b - a).forEach(idx => ms.deleteRow(idx));
+
+        // 2. Delete from Company Sheets
+        Object.keys(deleteMap).forEach(company => {
+            const cs = ss.getSheetByName(company);
+            if (cs) {
+                const cv = cs.getDataRange().getValues();
+                const passports = deleteMap[company];
+                const cIdIdx = cv[0].indexOf("Passport_No");
+                if (cIdIdx !== -1) {
+                    for (let i = cv.length - 1; i >= 1; i--) {
+                        if (passports.includes(String(cv[i][cIdIdx]).toLowerCase())) {
+                            cs.deleteRow(i + 1);
+                        }
+                    }
+                }
+            }
+            clearCache(company);
+        });
+
+        clearCache(MASTER_EMPLOYEES);
+        return { status: 'success', message: `${items.length} employees moved to Trash Bin` };
+    } catch (e) {
+        return { status: 'error', message: 'Bulk Delete Error: ' + e.toString() };
+    } finally {
+        lock.releaseLock();
+    }
+}
+
+function bulkDeleteCompanies(items) {
+    const lock = LockService.getScriptLock();
+    try {
+        lock.waitLock(20000);
+        if (!Array.isArray(items)) return { status: 'error', message: 'Items must be an array' };
+
+        const ss = SpreadsheetApp.openById(SHEET_ID);
+        const s = ss.getSheetByName(MASTER_COMPANIES);
+
+        items.forEach(data => {
+            const name = data["Company_Name"] || data["Company Name"];
+            if (!name) return;
+
+            // Delete from Master
+            const vals = s.getDataRange().getValues();
+            const nameIdx = COMPANY_HEADERS.indexOf("Company_Name");
+            for (let i = 1; i < vals.length; i++) {
+                if (vals[i][nameIdx] === name) {
+                    const cData = {};
+                    COMPANY_HEADERS.forEach((h, k) => cData[h] = vals[i][k]);
+                    moveToTrash(MASTER_COMPANIES, cData, "Bulk Company Delete");
+
+                    s.deleteRow(i + 1);
+                    break;
+                }
+            }
+            // Delete Sheet
+            const cs = ss.getSheetByName(name);
+            if (cs) ss.deleteSheet(cs);
+            clearCache(name);
+        });
+
+        // Note: For bulk company delete, strict cascading is expensive without iterating all employees. 
+        // Ideally we iterate employees once and match companies. But for now, we leave the employees orphaned or assume User cleans them up. 
+        // FUTURE: Implement bulk cascade.
+
+        clearCache(MASTER_COMPANIES);
+        return { status: 'success', message: 'Bulk delete companies moved to Trash Bin' };
+    } catch (e) {
+        return { status: 'error', message: e.toString() };
+    } finally {
+        lock.releaseLock();
+    }
+}
+
+function resetAllData() {
+    const lock = LockService.getScriptLock();
+    try {
+        lock.waitLock(30000);
+        const ss = SpreadsheetApp.openById(SHEET_ID);
+
+        // 1. Clear Master Tables (Keep Headers)
+        const masters = [MASTER_COMPANIES, MASTER_EMPLOYEES, CALENDAR_SHEET, TASKS_SHEET, SMART_ACTIONS_SHEET, DAILY_REPORT_SHEET, HISTORY_SHEET];
+        masters.forEach(m => {
+            const s = ss.getSheetByName(m);
+            if (s && s.getLastRow() > 1) {
+                s.deleteRows(2, s.getLastRow() - 1);
+            }
+            clearCache(m);
+        });
+
+        // 2. Delete All Company Sheets (Any sheet not in master list)
+        const allSheets = ss.getSheets();
+        const reserved = [...masters, MASTER_SCHEMA];
+        allSheets.forEach(s => {
+            if (!reserved.includes(s.getName())) {
+                ss.deleteSheet(s);
+            }
+        });
+
+        return { status: 'success', message: 'System completely reset. All data cleared.' };
+    } catch (e) {
+        return { status: 'error', message: e.toString() };
+    } finally {
+        lock.releaseLock();
+    }
 }
 
 function seedTestData() {
@@ -622,3 +883,77 @@ function chatAI(message) {
     return response;
 }
 
+function ensureRowId(sheetName, uniqueCol, data) {
+    // If we already have a numeric rowId/id, do nothing
+    if (data.rowId || (data.id && !isNaN(parseInt(data.id)))) return;
+
+    try {
+        const ss = SpreadsheetApp.openById(SHEET_ID);
+        const s = ss.getSheetByName(sheetName);
+        if (!s) return;
+        const vals = s.getDataRange().getValues();
+        if (vals.length < 2) return;
+        const headers = vals[0];
+        const idx = headers.indexOf(uniqueCol); // Find column index
+        if (idx === -1) return;
+
+        const val = data[uniqueCol];
+        if (!val) return;
+
+        // Find match
+        for (let i = 1; i < vals.length; i++) {
+            if (String(vals[i][idx]).toLowerCase() === String(val).toLowerCase()) {
+                data.rowId = i + 1; // Set the row index (1-based)
+                return;
+            }
+        }
+    } catch (e) {
+        // Silent failure, let updateRow handle the error if ID still missing
+    }
+}
+
+
+function bulkDeleteGeneric(sheetName, items, typeLabel) {
+    const lock = LockService.getScriptLock();
+    try {
+        lock.waitLock(20000);
+        if (!Array.isArray(items)) return { status: 'error', message: 'Items must be an array' };
+
+        const ss = SpreadsheetApp.openById(SHEET_ID);
+        const s = ss.getSheetByName(sheetName);
+        if (!s) return { status: 'error', message: 'Sheet not found' };
+
+        // We need headers to create the data object for trash
+        const headers = s.getRange(1, 1, 1, s.getLastColumn()).getValues()[0];
+
+        let deletedCount = 0;
+
+        // Optimize: Get all data once
+        const dataRange = s.getDataRange();
+        const vals = dataRange.getValues();
+
+        // Filter out items without ID and sort descending by ID
+        const validItems = items.filter(i => i.id).sort((a, b) => b.id - a.id);
+
+        validItems.forEach(item => {
+            const rowIndex = item.id;
+
+            if (rowIndex <= s.getLastRow()) {
+                const rowValues = s.getRange(rowIndex, 1, 1, headers.length).getValues()[0];
+                const rowData = {};
+                headers.forEach((h, i) => rowData[h] = rowValues[i]);
+
+                moveToTrash(sheetName, rowData, 'Bulk ' + typeLabel + ' Delete');
+                s.deleteRow(rowIndex);
+                deletedCount++;
+            }
+        });
+
+        clearCache(sheetName);
+        return { status: 'success', message: 'Bulk deleted ' + deletedCount + ' ' + typeLabel + 's' };
+    } catch (e) {
+        return { status: 'error', message: e.toString() };
+    } finally {
+        lock.releaseLock();
+    }
+}
